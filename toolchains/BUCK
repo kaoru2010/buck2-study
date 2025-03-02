@@ -3,3 +3,22 @@ load("@prelude//toolchains:demo.bzl", "system_demo_toolchains")
 # All the default toolchains, suitable for a quick demo or early prototyping.
 # Most real projects should copy/paste the implementation to configure them.
 system_demo_toolchains()
+
+# https://github.com/nimble-code/Spin
+http_file(
+  name = 'spin-archive',
+  urls = [
+    'https://github.com/nimble-code/Spin/raw/refs/heads/master/Bin/spin651_mac64.gz',
+  ],
+  sha256 = 'd05199540b66f54764fdb7afd94287f11b0368a2f6b061c4afe0ffe0d3f64f77',
+)
+
+genrule(
+  name = "spin-bin",
+  out = "spin",
+  executable = True,
+  srcs = [
+    ':spin-archive',
+  ],
+  cmd = "gunzip -c ${SRCS} > ${OUT} && chmod 755 ${OUT}",
+)
