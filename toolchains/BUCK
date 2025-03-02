@@ -21,4 +21,13 @@ genrule(
     ':spin-archive',
   ],
   cmd = "gunzip -c ${SRCS} > ${OUT} && chmod 755 ${OUT}",
+  tests = [
+    ':spin-check',
+  ],
+)
+
+sh_test(
+    name = "spin-check",
+    test = ":spin-bin",
+    args = ["-V"],
 )
