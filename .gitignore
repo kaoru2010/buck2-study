@@ -1,5 +1,6 @@
 # buck2
 /buck-out
+/.buck2_bin
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
