@@ -6,7 +6,7 @@ system_demo_toolchains()
 
 # https://github.com/nimble-code/Spin
 http_file(
-  name = 'spin-archive',
+  name = 'spin_archive',
   urls = [
     'https://github.com/nimble-code/Spin/raw/refs/heads/master/Bin/spin651_mac64.gz',
   ],
@@ -14,21 +14,21 @@ http_file(
 )
 
 genrule(
-  name = "spin-bin",
+  name = "spin_bin",
   out = "spin",
   executable = True,
   srcs = [
-    ':spin-archive',
+    ':spin_archive',
   ],
   cmd = "gunzip -c ${SRCS} > ${OUT} && chmod 755 ${OUT}",
   tests = [
-    ':spin-check',
+    ':spin_check',
   ],
   visibility = ['PUBLIC'],
 )
 
 sh_test(
-    name = "spin-check",
-    test = ":spin-bin",
+    name = "spin_check",
+    test = ":spin_bin",
     args = ["-V"],
 )

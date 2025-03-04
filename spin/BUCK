@@ -28,10 +28,20 @@ sh_test(
 )
 
 
+
+load('@toolchains//:spin_rule.bzl', 'spin_rule')
+spin_rule(
+  name = 'sample_0',
+  src = 'sample_0.pml',
+)
+spin_rule(
+  name = 'sample_1',
+  src = 'sample_1.pml',
+)
 test_suite(
   name = "all_tests",
   tests = [
-    ':spin_sample_0_test',
-    ':spin_sample_1_test',
+    ':sample_0',
+    ':sample_1',
   ],
 )
