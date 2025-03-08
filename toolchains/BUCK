@@ -32,3 +32,23 @@ sh_test(
     test = ":spin_bin",
     args = ["-V"],
 )
+
+BATS_VERSION = '1.11.1'
+
+http_archive(
+  name = 'bats_archive',
+  urls = [
+    'https://github.com/bats-core/bats-core/archive/refs/tags/v{}.tar.gz'.format(BATS_VERSION),
+  ],
+  sha256 = '5c57ed9616b78f7fd8c553b9bae3c7c9870119edd727ec17dbd1185c599f79d9',
+  type = 'tar.gz',
+  sub_targets = {
+    'bats': ["bats-core-{}/bin/bats".format(BATS_VERSION)],
+  },
+)
+
+sh_binary(
+  name = 'bats_bin',
+  main = ':bats_archive[bats]',
+  visibility = ['PUBLIC'],
+)
