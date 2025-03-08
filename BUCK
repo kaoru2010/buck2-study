@@ -6,6 +6,11 @@ genrule(
     cmd = "echo BUILT BY BUCK2> $OUT",
 )
 
+sh_binary(
+    name = 'git_clean_merged_branches',
+    main = 'git/git-clean-merged-branches.sh',
+)
+
 sh_test(
     name = 'bats_sample',
     test = 'toolchains//:bats_bin',
