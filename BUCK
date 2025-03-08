@@ -5,3 +5,11 @@ genrule(
     out = "out.txt",
     cmd = "echo BUILT BY BUCK2> $OUT",
 )
+
+sh_test(
+    name = 'bats_sample',
+    test = 'toolchains//:bats_bin',
+    args = [
+        'bats/sample.bats',
+    ],
+)
