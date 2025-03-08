@@ -13,3 +13,11 @@ sh_test(
         'bats/sample.bats',
     ],
 )
+
+test_suite(
+  name = "all_tests",
+  tests = [
+    ':bats_sample',
+    '//spin:all_tests',
+  ],
+)
