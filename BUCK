@@ -26,3 +26,22 @@ test_suite(
     '//spin:all_tests',
   ],
 )
+
+load("@toolchains//:android_rule.bzl", "android_rule")
+android_rule(
+    name = "android_sample",
+    srcs = glob(["android/**/*"]),
+    settings_gradle = "android/settings.gradle.kts",
+    patch_files = [
+        "release_build.patch",
+    ],
+    patch_command = "patch -p1",
+    args = [
+        ":app:assembleRelease",
+    ],
+    out = "the_out",
+    cmd = "cp -a android/app/build/outputs ${OUT}",
+    sub_targets = {
+        'app-release.apk': ['apk/release/app-release.apk'],
+    },
+)
