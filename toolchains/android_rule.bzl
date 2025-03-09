@@ -27,6 +27,7 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
         cmd_args([
             "#!/bin/sh",
             "set -e",
+            "set -o pipefail",
             "",
             cmd_args(["cd", srcs_artifact], delimiter=" "),
             "export BUCK2_WORKSPACE=`pwd`",

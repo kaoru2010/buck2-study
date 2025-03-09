@@ -33,11 +33,11 @@ android_rule(
     srcs = glob(["android/**/*"]),
     settings_gradle = "android/settings.gradle.kts",
     args = [
-        ":app:assembleDebug",
+        ":app:assembleRelease",
     ],
     out = "the_out",
     cmd = "cp -a android/app/build/outputs ${OUT}",
     sub_targets = {
-        'app-debug.apk': ['apk/debug/app-debug.apk'],
+        'app-release.apk': ['apk/release/app-release.apk'],
     },
 )
