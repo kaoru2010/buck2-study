@@ -5,7 +5,7 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
     build_log = ctx.actions.declare_output('build_log.log')
     modified_srcs_dir = ctx.actions.declare_output('modified_srcs', dir = True)
 
-    root_project_dir = paths.dirname(ctx.attrs.settings_gradle.short_path)
+    root_project_dir = paths.dirname(ctx.attrs.settings_gradle.short_path if type(ctx.attrs.settings_gradle) != "string" else ctx.attrs.settings_gradle)
 
     if type(ctx.attrs.srcs) == type([]):
         # FIXME: We should always use the short_path, but currently that is sometimes blank.
@@ -67,7 +67,7 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
                 ctx.attrs.cmd,
                 ctx.attrs.out,
                 ctx.attrs.patch_files,
-                ctx.attrs.patch_command,
+                patch_command,
             ],
         ),
         category = 'android',
@@ -109,7 +109,7 @@ android_rule = rule(
     impl = _android_rule_impl,
     attrs = {
         "srcs": attrs.list(attrs.source(), default = []),
-        "settings_gradle": attrs.source(),
+        "settings_gradle": attrs.one_of(attrs.source(), attrs.string()),
         "patch_files": attrs.list(attrs.source(), default = []),
         "patch_command": attrs.option(attrs.string(), default = None),
         "args": attrs.list(attrs.string(), default = ['tasks']),

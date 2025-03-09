@@ -45,3 +45,20 @@ android_rule(
         'app-release.apk': ['apk/release/app-release.apk'],
     },
 )
+
+git_fetch(
+    name = "local_git",
+    repo = ".",
+    rev = "8d4aca0b6ffc2b0a978400546c25e9e7305f728a",
+)
+
+android_rule(
+    name = "android_sample2",
+    srcs = [':local_git'],
+    settings_gradle = "local_git/android/settings.gradle.kts",
+    args = [
+        ":app:assembleDebug",
+    ],
+    out = "the_out",
+    cmd = "cp -a local_git/android/app/build/outputs ${OUT}",
+)
