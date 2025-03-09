@@ -1,7 +1,26 @@
 diff --git a/android/app/build.gradle.kts b/android/app/build.gradle.kts
-index 1c60898..addad1a 100644
+index 1c60898..5e5a692 100644
 --- a/android/app/build.gradle.kts
 +++ b/android/app/build.gradle.kts
+@@ -19,12 +19,12 @@ android {
+     }
+ 
+     signingConfigs {
+-        create("release") {
+-            storeFile = file("path/to/release.keystore")
+-            storePassword = "yourStorePassword"
+-            keyAlias = "yourKeyAlias"
+-            keyPassword = "yourKeyPassword"
+-        }
++//        create("release") {
++//            storeFile = file("path/to/release.keystore")
++//            storePassword = "yourStorePassword"
++//            keyAlias = "yourKeyAlias"
++//            keyPassword = "yourKeyPassword"
++//        }
+     }
+ 
+     buildTypes {
 @@ -34,7 +34,7 @@ android {
                  getDefaultProguardFile("proguard-android-optimize.txt"),
                  "proguard-rules.pro"
