@@ -22,6 +22,11 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
         symlinks = ctx.attrs.srcs
     srcs_artifact = ctx.actions.copied_dir("srcs", symlinks)
 
+    patches = [
+        cmd_args([ctx.attrs.patch_command, '<', patch_file], delimiter=" ", relative_to = srcs_artifact)
+        for patch_file in ctx.attrs.patch_files
+    ]
+
     sh = ctx.actions.write(
         "build.sh",
         cmd_args([
@@ -31,6 +36,9 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
             "",
             cmd_args(["cd", srcs_artifact], delimiter=" "),
             "export BUCK2_WORKSPACE=`pwd`",
+            "",
+            patches,
+            "",
             cmd_args(["cd", root_project_dir], delimiter=" "),
             cmd_args(["./gradlew", ctx.attrs.args, '|', 'tee', build_log.as_output()], delimiter=" ", relative_to = srcs_artifact.project(root_project_dir)),
             "",
@@ -53,6 +61,8 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
                 ctx.attrs.args,
                 ctx.attrs.cmd,
                 ctx.attrs.out,
+                ctx.attrs.patch_files,
+                ctx.attrs.patch_command,
             ],
         ),
         category = 'android',
@@ -95,6 +105,8 @@ android_rule = rule(
     attrs = {
         "srcs": attrs.list(attrs.source(), default = []),
         "settings_gradle": attrs.source(),
+        "patch_files": attrs.list(attrs.source(), default = []),
+        "patch_command": attrs.option(attrs.string(), default = 'patch -p1'),
         "args": attrs.list(attrs.string(), default = ['tasks']),
         "out": attrs.string(),
         "cmd": attrs.string(),

@@ -1,0 +1,13 @@
+diff --git a/android/app/build.gradle.kts b/android/app/build.gradle.kts
+index 1c60898..addad1a 100644
+--- a/android/app/build.gradle.kts
++++ b/android/app/build.gradle.kts
+@@ -34,7 +34,7 @@ android {
+                 getDefaultProguardFile("proguard-android-optimize.txt"),
+                 "proguard-rules.pro"
+             )
+-            signingConfig = signingConfigs.getByName("release")
++            signingConfig = signingConfigs.getByName("debug")
+         }
+     }
+     compileOptions {

@@ -32,6 +32,10 @@ android_rule(
     name = "android_sample",
     srcs = glob(["android/**/*"]),
     settings_gradle = "android/settings.gradle.kts",
+    patch_files = [
+        "release_build.patch",
+    ],
+    patch_command = "patch -p1",
     args = [
         ":app:assembleRelease",
     ],
