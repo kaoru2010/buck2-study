@@ -26,3 +26,18 @@ test_suite(
     '//spin:all_tests',
   ],
 )
+
+load("@toolchains//:android_rule.bzl", "android_rule")
+android_rule(
+    name = "android_sample",
+    srcs = glob(["android/**/*"]),
+    settings_gradle = "android/settings.gradle.kts",
+    args = [
+        ":app:assembleDebug",
+    ],
+    out = "the_out",
+    cmd = "cp -a android/app/build/outputs ${OUT}",
+    sub_targets = {
+        'app-debug.apk': ['apk/debug/app-debug.apk'],
+    },
+)
