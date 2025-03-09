@@ -2,6 +2,7 @@ load("@prelude//:paths.bzl", "paths")
 
 def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
     out_dir = ctx.actions.declare_output(ctx.attrs.out, dir = True)
+    build_log = ctx.actions.declare_output('build_log.log')
 
     root_project_dir = paths.dirname(ctx.attrs.settings_gradle.short_path)
 
@@ -30,7 +31,7 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
             cmd_args(["cd", srcs_artifact], delimiter=" "),
             "export BUCK2_WORKSPACE=`pwd`",
             cmd_args(["cd", root_project_dir], delimiter=" "),
-            cmd_args(["./gradlew", ctx.attrs.args], delimiter=" "),
+            cmd_args(["./gradlew", ctx.attrs.args, '|', 'tee', build_log.as_output()], delimiter=" ", relative_to = srcs_artifact.project(root_project_dir)),
             "",
             'cd "$BUCK2_WORKSPACE"',
             cmd_args("export TMP=${TMPDIR:-/tmp}"),
@@ -45,6 +46,7 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
             ["sh", sh],
             hidden = [
                 out_dir.as_output(),
+                build_log.as_output(),
                 srcs_artifact,
                 ctx.attrs.settings_gradle,
                 ctx.attrs.args,
@@ -53,6 +55,7 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
             ],
         ),
         category = 'android',
+        always_print_stderr = True,
     )
 
     sub_targets = ctx.attrs.sub_targets
@@ -69,12 +72,15 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
     else:
         fail("sub_targets must be a list or dict")
 
+    sub_targets['build_log.log'] = [DefaultInfo(default_output = build_log)];
+
     return [
         DefaultInfo(
             default_output = out_dir,
             sub_targets = sub_targets,
             other_outputs = [
                 srcs_artifact,
+                build_log,
             ],
         ),
         #ExternalRunnerTestInfo(
