@@ -3,6 +3,7 @@ load("@prelude//:paths.bzl", "paths")
 def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
     out_dir = ctx.actions.declare_output(ctx.attrs.out, dir = True)
     build_log = ctx.actions.declare_output('build_log.log')
+    modified_srcs_dir = ctx.actions.declare_output('modified_srcs', dir = True)
 
     root_project_dir = paths.dirname(ctx.attrs.settings_gradle.short_path)
 
@@ -22,8 +23,9 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
         symlinks = ctx.attrs.srcs
     srcs_artifact = ctx.actions.copied_dir("srcs", symlinks)
 
+    patch_command = ctx.attrs.patch_command if ctx.attrs.patch_command != None else 'patch -p1'
     patches = [
-        cmd_args([ctx.attrs.patch_command, '<', patch_file], delimiter=" ", relative_to = srcs_artifact)
+        cmd_args([patch_command, '<', patch_file], delimiter=" ", relative_to = modified_srcs_dir)
         for patch_file in ctx.attrs.patch_files
     ]
 
@@ -34,18 +36,20 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
             "set -e",
             "set -o pipefail",
             "",
-            cmd_args(["cd", srcs_artifact], delimiter=" "),
+            cmd_args(['cp', '-a', srcs_artifact, modified_srcs_dir.as_output()], delimiter=" "),
+            "",
+            cmd_args(["cd", modified_srcs_dir], delimiter=" "),
             "export BUCK2_WORKSPACE=`pwd`",
             "",
             patches,
             "",
             cmd_args(["cd", root_project_dir], delimiter=" "),
-            cmd_args(["./gradlew", ctx.attrs.args, '|', 'tee', build_log.as_output()], delimiter=" ", relative_to = srcs_artifact.project(root_project_dir)),
+            cmd_args(["./gradlew", ctx.attrs.args, '|', 'tee', build_log.as_output()], delimiter=" ", relative_to = modified_srcs_dir.project(root_project_dir)),
             "",
             'cd "$BUCK2_WORKSPACE"',
             cmd_args("export TMP=${TMPDIR:-/tmp}"),
-            cmd_args(srcs_artifact.project(root_project_dir), format = "export ROOT_PROJECT_DIR={}", relative_to = srcs_artifact),
-            cmd_args(out_dir.as_output(), format="export OUT={}", relative_to = srcs_artifact),
+            cmd_args(modified_srcs_dir.project(root_project_dir), format = "export ROOT_PROJECT_DIR={}", relative_to = modified_srcs_dir),
+            cmd_args(out_dir.as_output(), format="export OUT={}", relative_to = modified_srcs_dir),
             cmd_args([ctx.attrs.cmd]),
         ]),
         is_executable = True,
@@ -57,6 +61,7 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
                 out_dir.as_output(),
                 build_log.as_output(),
                 srcs_artifact,
+                modified_srcs_dir.as_output(),
                 ctx.attrs.settings_gradle,
                 ctx.attrs.args,
                 ctx.attrs.cmd,
@@ -90,7 +95,7 @@ def _android_rule_impl(ctx: AnalysisContext) -> list[Provider]:
             default_output = out_dir,
             sub_targets = sub_targets,
             other_outputs = [
-                srcs_artifact,
+                modified_srcs_dir,
                 build_log,
             ],
         ),
@@ -106,7 +111,7 @@ android_rule = rule(
         "srcs": attrs.list(attrs.source(), default = []),
         "settings_gradle": attrs.source(),
         "patch_files": attrs.list(attrs.source(), default = []),
-        "patch_command": attrs.option(attrs.string(), default = 'patch -p1'),
+        "patch_command": attrs.option(attrs.string(), default = None),
         "args": attrs.list(attrs.string(), default = ['tasks']),
         "out": attrs.string(),
         "cmd": attrs.string(),
