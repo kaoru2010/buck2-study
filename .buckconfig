@@ -3,6 +3,7 @@
   prelude = prelude
   toolchains = toolchains
   none = none
+  buck2_study_toolchains = buck2-study-toolchains
 
 [cell_aliases]
   config = prelude
