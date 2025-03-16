@@ -1,0 +1,3 @@
+[submodule "buck2-study-toolchains"]
+	path = buck2-study-toolchains
+	url = https://github.com/kaoru2010/buck2-study-toolchains.git
