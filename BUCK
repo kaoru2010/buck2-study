@@ -61,4 +61,15 @@ android_rule(
     ],
     out = "the_out",
     cmd = "cp -a local_git/android/app/build/outputs ${OUT}",
+    sub_targets = {
+        'app-debug.apk': [ 'apk/debug/app-debug.apk' ],
+        'output-metadata.json': [ 'apk/debug/output-metadata.json' ],
+    }
+)
+
+load("@toolchains//:android_install.bzl", "android_install")
+android_install(
+    name = "android_install",
+    apk_path = ":android_sample2[app-debug.apk]",
+    metadata_path = ":android_sample2[output-metadata.json]",
 )
