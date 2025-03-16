@@ -13,7 +13,7 @@ sh_binary(
 
 sh_test(
     name = 'bats_sample',
-    test = 'toolchains//:bats_bin',
+    test = 'buck2_study_toolchains//:bats_bin',
     args = [
         'bats/sample.bats',
     ],
@@ -27,7 +27,7 @@ test_suite(
   ],
 )
 
-load("@toolchains//:android_rule.bzl", "android_rule")
+load("@buck2_study_toolchains//:android_rule.bzl", "android_rule")
 android_rule(
     name = "android_sample",
     srcs = glob(["android/**/*"]),
@@ -67,7 +67,7 @@ android_rule(
     }
 )
 
-load("@toolchains//:android_install.bzl", "android_install")
+load("@buck2_study_toolchains//:android_install.bzl", "android_install")
 android_install(
     name = "android_install",
     apk_path = ":android_sample2[app-debug.apk]",
