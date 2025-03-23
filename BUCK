@@ -24,7 +24,28 @@ test_suite(
   tests = [
     ':bats_sample',
     '//spin:all_tests',
+    ':pict_test',
   ],
+)
+
+sh_test(
+    name = 'pict_test',
+    test = 'buck2_study_toolchains//:pict_bin',
+    args = [
+        'pict/PICT_OS_Browser_InputConstraintDemo.pict',
+        '/s',
+    ],
+)
+
+load("@buck2_study_toolchains//:pict_cucumber_table.bzl", "pict_cucumber_table")
+pict_cucumber_table(
+    name = "pict_test_cucumber",
+    src = "pict/PICT_OS_Browser_InputConstraintDemo.pict",
+)
+
+pict_cucumber_table(
+    name = "pict_negative_testing",
+    src = "pict/negative_testing.pict",
 )
 
 load("@buck2_study_toolchains//:android_rule.bzl", "android_rule")

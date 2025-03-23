@@ -1,0 +1,16 @@
+# --- PICTデモサンプル ---
+# このファイルは、PICTによるテストケース自動生成の動作を理解するためのサンプルです。
+# 各パラメータはコロン(:)の後にカンマ区切りで値を記述し、ルール行で制約を記述しています。
+
+OS: Windows, Mac, Linux
+Browser: Chrome, Firefox, Safari, Edge
+InputDevice: Keyboard, Mouse, Touch
+
+# 制約1: Mac環境では、Edgeブラウザは利用できない
+IF [OS] = "Mac" THEN [Browser] <> "Edge";
+
+# 制約2: Linux環境では、Safariブラウザは利用できない
+IF [OS] = "Linux" THEN [Browser] <> "Safari";
+
+# 制約3: Touch入力を使用する場合、OSはMac以外である必要がある
+IF [InputDevice] = "Touch" THEN [OS] <> "Mac";
