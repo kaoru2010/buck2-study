@@ -24,7 +24,16 @@ test_suite(
   tests = [
     ':bats_sample',
     '//spin:all_tests',
+    ':pict_tests',
+  ],
+)
+
+test_suite(
+  name = 'pict_tests',
+  tests = [
     ':pict_test',
+    ':pict_cucumber_test',
+    ':pict_negative_testing_test',
   ],
 )
 
@@ -37,9 +46,19 @@ sh_test(
     ],
 )
 
+sh_test(
+    name = 'pict_cucumber_test',
+    test = ':pict_cucumber',
+)
+
+sh_test(
+    name = 'pict_negative_testing_test',
+    test = ':pict_negative_testing',
+)
+
 load("@buck2_study_toolchains//:pict_cucumber_table.bzl", "pict_cucumber_table")
 pict_cucumber_table(
-    name = "pict_test_cucumber",
+    name = "pict_cucumber",
     src = "pict/PICT_OS_Browser_InputConstraintDemo.pict",
 )
 
