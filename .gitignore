@@ -1,6 +1,7 @@
 # buck2
 /buck-out
 /.buck2_bin
+/.buckconfig.local
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
