@@ -1,0 +1,11 @@
+load("@buck2_study_toolchains//mise_workspace.bzl", "mise_workspace")
+
+mise_workspace(
+    name = "mise_test",
+    mise_activate = read_config("mise", "activate_bash"),
+    srcs = [
+        "hello_python.py",
+        "mise.toml",
+    ],
+    cmd = "env > result.txt; pwd; ls -al; python hello_python.py; ",
+)
