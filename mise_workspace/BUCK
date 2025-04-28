@@ -5,7 +5,12 @@ mise_workspace(
     mise_activate = read_config("mise", "activate_bash"),
     srcs = [
         "hello_python.py",
+        "hello.py",
+        "test_hello.py",
         "mise.toml",
     ],
     cmd = "env > result.txt; pwd; ls -al; python hello_python.py; ",
+    run_cmd = "python hello.py",
+    test_cmd = "python test_hello.py -v",
+    required_envs = ["HOME"],
 )
