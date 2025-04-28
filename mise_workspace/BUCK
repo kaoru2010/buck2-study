@@ -29,3 +29,11 @@ mise_workspace(
     test_cmd = "go test hello_test.go hello.go",
     required_envs = ["HOME"],
 )
+
+test_suite(
+    name = "mise_test_all",
+    tests = [
+        ":mise_test",
+        ":mise_test2",
+    ],
+)
