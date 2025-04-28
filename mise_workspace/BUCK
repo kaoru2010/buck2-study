@@ -14,3 +14,18 @@ mise_workspace(
     test_cmd = "python test_hello.py -v",
     required_envs = ["HOME"],
 )
+
+mise_workspace(
+    name = "mise_test2",
+    mise_activate = read_config("mise", "activate_bash"),
+    srcs = [
+        "main.go",
+        "hello.go",
+        "hello_test.go",
+        "mise.toml",
+    ],
+    cmd = "pwd; ls -al > result.txt;",
+    run_cmd = "go run main.go hello.go",
+    test_cmd = "go test hello_test.go hello.go",
+    required_envs = ["HOME"],
+)
