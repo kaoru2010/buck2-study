@@ -2,6 +2,7 @@ load("@buck2_study_toolchains//mise_workspace.bzl", "mise_workspace")
 
 mise_workspace(
     name = "mise_test",
+    required_envs = ["HOME"],
     mise_activate = read_config("mise", "activate_bash"),
     srcs = [
         "hello_python.py",
@@ -9,14 +10,17 @@ mise_workspace(
         "test_hello.py",
         "mise.toml",
     ],
-    cmd = "env > result.txt; pwd; ls -al; python hello_python.py; ",
-    run_cmd = "python hello.py",
-    test_cmd = "python test_hello.py -v",
-    required_envs = ["HOME"],
+    run_cmds = [
+        "python hello.py",
+    ],
+    test_cmds = [
+        "python test_hello.py -v",
+    ],
 )
 
 mise_workspace(
     name = "mise_test2",
+    required_envs = ["HOME"],
     mise_activate = read_config("mise", "activate_bash"),
     srcs = [
         "main.go",
@@ -24,10 +28,15 @@ mise_workspace(
         "hello_test.go",
         "mise.toml",
     ],
-    cmd = "pwd; ls -al > result.txt;",
-    run_cmd = "go run main.go hello.go",
-    test_cmd = "go test hello_test.go hello.go",
-    required_envs = ["HOME"],
+    run_cmds = [
+        "go run main.go hello.go",
+    ],
+    test_cmds = [
+        "go test hello_test.go hello.go",
+    ],
+    test_local_resources = {
+#        "aws_test": ":aws_test",
+    },
 )
 
 test_suite(
@@ -35,5 +44,40 @@ test_suite(
     tests = [
         ":mise_test",
         ":mise_test2",
+    ],
+)
+
+#load("@buck2_study_toolchains//aws_codeartifact_get_authorization_token.bzl", "aws_codeartifact_get_authorization_token")
+#
+#aws_codeartifact_get_authorization_token(
+#    name = "aws_test",
+#    domain = read_config("aws", "domain"),
+#    domain_owner = read_config("aws", "domain_owner"),
+#    profile = read_config("aws", "profile"),
+#)
+
+git_fetch(
+    name = "buck2-study-toolchains.git",
+    repo = "https://github.com/kaoru2010/buck2-study-toolchains.git",
+    rev = "df877c2c244a96b69a63683066688058fa0cb56f",
+    sub_targets = [
+        "BUCK",
+    ],
+)
+mise_workspace(
+    name = "mise_test3",
+    required_envs = ["HOME"],
+    mise_activate = read_config("mise", "activate_bash"),
+    srcs = [
+        ":buck2-study-toolchains.git[BUCK]",
+    ],
+    run_cmds = [
+        "pwd",
+        "echo",
+        "ls -al",
+        "echo",
+        "gfind . -type f",
+        "echo",
+        "echo $(location :buck2-study-toolchains.git[BUCK])",
     ],
 )
