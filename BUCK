@@ -113,3 +113,10 @@ android_install(
     apk_path = ":android_sample2[app-debug.apk]",
     metadata_path = ":android_sample2[output-metadata.json]",
 )
+
+load("@buck2_study_toolchains//:gradle_collect_module_info.bzl", "gradle_collect_module_info")
+gradle_collect_module_info(
+    name = "gradle_collect_module_info",
+    srcs = glob(["android/**/*"]),
+    strip_prefix = "android/",
+)
