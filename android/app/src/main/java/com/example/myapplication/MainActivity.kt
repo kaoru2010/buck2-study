@@ -19,10 +19,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,13 +37,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(title = { Text(text = "Chrome Custom Tab Demo") })
-                    }
+                    },
                 ) { innerPadding ->
                     HomeScreen(
                         url = "https://developer.android.com/",
                         modifier = Modifier
                             .padding(innerPadding)
-                            .fillMaxSize()
+                            .fillMaxSize(),
                     )
                 }
             }
@@ -55,14 +57,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun HomeScreen(
     url: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
 
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(text = "公式ドキュメントを開いてみましょう")
         Spacer(modifier = Modifier.height(16.dp))
@@ -70,9 +72,9 @@ fun HomeScreen(
             onClick = {
                 openCustomTab(
                     context = context,
-                    uri = Uri.parse(url)
+                    uri = Uri.parse(url),
                 )
-            }
+            },
         ) {
             Text("Chrome Custom Tab を開く")
         }

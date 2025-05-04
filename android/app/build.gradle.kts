@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -15,7 +17,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.myapplication.test.HiltCucumberRunner"
     }
 
     signingConfigs {
@@ -28,6 +30,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField(
+                "String",
+                "JSON_REPORT_PLUGIN",
+                "\"json:/data/data/com.example.myapplication/files/cucumber.json\"",
+            )
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -46,6 +55,21 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        animationsDisabled = true
+        managedDevices {
+            localDevices {
+                create("pixel2api34") {
+                    device = "Pixel 2"
+                    apiLevel = 34
+                    systemImageSource = "aosp"
+                }
+            }
+        }
     }
 }
 
@@ -60,13 +84,29 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.browser)
+    implementation(libs.dagger.hilt.android)
+    ksp(libs.dagger.hilt.compiler)
 
     testImplementation(libs.junit)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    androidTestImplementation(libs.cucumber.android)
+    androidTestImplementation(libs.cucumber.android.hilt)
+
+    // Compose UI テストと Espresso Intents を併用
+    androidTestImplementation(libs.ui.test.junit4)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.espresso.intents)
+    androidTestImplementation(libs.androidx.test.uiautomator)
+
+    // Hilt＋Compose 連携が要るなら
+    implementation(libs.hilt.navigation.compose)
+
+    // androidTest（DI を使う Step 定義用）
+    androidTestImplementation(libs.dagger.hilt.android)
+    kspAndroidTest(libs.dagger.hilt.compiler)
 }

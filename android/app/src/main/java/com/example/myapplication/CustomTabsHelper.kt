@@ -2,7 +2,6 @@ package com.example.myapplication
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsService
 
@@ -18,7 +17,7 @@ import androidx.browser.customtabs.CustomTabsService
 object CustomTabsHelper {
 
     private const val ACTION_CUSTOM_TABS_CONNECTION =
-        CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION   // = "androidx.browser.customtabs.action.CustomTabsService"
+        CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION // = "androidx.browser.customtabs.action.CustomTabsService"
 
     private const val CHROME_PACKAGE = "com.android.chrome"
     private const val CHROME_BETA_PACKAGE = "com.chrome.beta"
@@ -42,7 +41,7 @@ object CustomTabsHelper {
         // Custom Tabs Service を持つパッケージを列挙
         val serviceIntent = Intent(ACTION_CUSTOM_TABS_CONNECTION)
         val resolveInfos = pm.queryIntentServices(serviceIntent, 0)
-        if (resolveInfos.isNullOrEmpty()) return null   // 該当なし
+        if (resolveInfos.isNullOrEmpty()) return null // 該当なし
 
         val supportingPackages = resolveInfos
             .mapNotNull { it.serviceInfo?.packageName }
@@ -59,7 +58,7 @@ object CustomTabsHelper {
             CHROME_PACKAGE,
             CHROME_BETA_PACKAGE,
             CHROME_DEV_PACKAGE,
-            CHROME_LOCAL_PACKAGE
+            CHROME_LOCAL_PACKAGE,
         )
         preferred.firstOrNull { supportingPackages.contains(it) }?.let {
             cachedPackageName = it
