@@ -34,7 +34,7 @@ The environment includes [bats-core](https://github.com/bats-core/bats-core) for
 
 ```bash
 # With flakes
-docker compose run --rm nix-shell nix develop --command "bats test/bash_version.bats"
+docker compose run --rm nix-shell nix develop --command bash -c "bats test/bash_version.bats"
 
 # With legacy nix-shell
 docker compose run --rm nix-shell nix-shell --run "bats test/bash_version.bats"
