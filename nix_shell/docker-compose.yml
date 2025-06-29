@@ -1,0 +1,15 @@
+services:
+  nix-shell:
+    # Update hash from: https://git.lix.systems/lix-project/-/packages/container/lix/latest
+    image: git.lix.systems/lix-project/lix@sha256:38382e7226a2f0f3719335b4428005c4ee5a6aa2980f925168f1449d134438f0
+    volumes:
+      - .:/workspace
+      - nix-store:/nix
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    command: nix-shell
+
+volumes:
+  nix-store:
+    external: true
