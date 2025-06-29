@@ -5,10 +5,11 @@ services:
     volumes:
       - .:/workspace
       - nix-store:/nix
+      - ./nix.conf:/etc/nix/nix.conf:ro
     working_dir: /workspace
     stdin_open: true
     tty: true
-    command: nix-shell
+    command: nix develop
 
 volumes:
   nix-store:
